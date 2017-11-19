@@ -1,0 +1,58 @@
+VERSION BUILD=8970419 RECORDER=FX
+TAB T=1
+'//--------------------------------
+'// Todays Date in M/D/YYYY format
+SET todaysdate EVAL("var d = new Date();var result = (d.getMonth()+1)+'/'+d.getDate()+'/'+(d.getYear()+1900); result;")
+PROMPT {{todaysdate}}
+'//--------------------------------
+'// Tomorrows Date in M/D/YYYY format
+SET tomorowsdate EVAL("var t = new Date(); var d = new Date(); d.setDate(t.getDate()+1); var result = (d.getMonth()+1)+'/'+d.getDate()+'/'+(d.getYear()+1900); result;")
+PROMPT {{tomorrowsdate}}
+'//--------------------------------
+'// Todays Date in MM/DD/YYYY format
+SET todaysdate EVAL("var d = new Date();var result = (("0" + (d.getMonth() + 1)).slice(-2))+'/'+(("0" + d.getDate()).slice(-2))+'/'+(d.getYear()+1900); result;")
+PROMPT {{todaysdate}}
+'//--------------------------------
+'// Tomorrows Date in MM/DD/YYYY format
+SET tomorowsdate EVAL("var t = new Date(); var d = new Date(); d.setDate(t.getDate()+1); var result = (("0" + (d.getMonth() + 1)).slice(-2))+'/'+(("0" + d.getDate()).slice(-2))+'/'+(d.getYear()+1900); result;")
+PROMPT {{tomorrowsdate}}
+'//--------------------------------
+'//Generate Random Number between 10 to 99
+SET number EVAL("var randomNumber=Math.floor(Math.random()*(99-10+1) + 10); randomNumber;")
+PROMPT {{number}}
+'//--------------------------------
+'//Generate 10 digit phone number
+SET phoneno EVAL("randomString(10, '0123456789'); function randomString(length, chars) { var result = ''; for (var i = length; i > 0; --i) result += chars[Math.round(Math.random() * (chars.length - 1))]; return result; }")
+PROMPT {{phoneno}}
+'//--------------------------------
+'//Generate 5 digit alphanumeric text
+SET alphanum EVAL("randomString(5, '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ'); function randomString(length, chars) { var result = ''; for (var i = length; i > 0; --i) result += chars[Math.round(Math.random() * (chars.length - 1))]; return result; }")
+PROMPT {{alphanum}}
+'//--------------------------------
+'//Select from 3 of 4 options [exculding 1st option --select--] by random in ddlType DDL
+SET ddl4options EVAL("randomString(1, '234234234234234234234234234234'); function randomString(length, chars) { var result = ''; for (var i = length; i > 0; --i) result += chars[Math.round(Math.random() * (chars.length - 1))]; return result; }")
+TAG POS=1 TYPE=SELECT FORM=ID:form1 ATTR=ID:ddlType CONTENT=#{{ddl4options}}
+'//--------------------------------
+'//Genearate Random words from an Array list
+SET randomwords EVAL("var textArray = ['Secure','Site','Information','Service','Purpose','Warranty','Data','System','Referenced','Bring','Correct','Agree','Prevent'];var randomIndex = Math.floor(Math.random()*textArray.length);var result = textArray[randomIndex];randomIndex = Math.floor(Math.random()*textArray.length);result = result+'<SP>'+textArray[randomIndex];result;")
+PROMPT {{randomwords}}
+'//--------------------------------
+'//Generate 5 Random words from an Array list
+SET randomwords EVAL("randomWords(5, ['Secure','Site','Information','Service','Purpose','Warranty','Data','System','Referenced','Bring','Correct','Agree','Prevent','Secure','Site','Information','Service','Purpose','Warranty','Data','System','Referenced','Bring','Correct','Agree','Prevent','Secure','Site','Information','Service','Purpose','Warranty','Data','System','Referenced','Bring','Correct','Agree','Prevent']); function randomWords(words, txtArray) { var result = ''; for (var i = words; i > 0; --i) result += txtArray[Math.floor(Math.random()*txtArray.length)]+'<SP>'; return result; }")
+PROMPT {{randomwords}}
+'//--------------------------------
+'//Extract Username from a Paragraph --> Hello User, Please use your User name: <<10 character username>> and login to your portal
+SET !EXTRACT NULL 
+TAG POS=1 TYPE=SPAN ATTR=ID:txtContent EXTRACT=TXT
+SET username EVAL("var str = '{{!EXTRACT}}'; var strSearch='User name: '; var strUnameloc=str.lastIndexOf(strSearch); var strUnametmp=str.substring((strUnameloc+strSearch.length),(strUnameloc+strSearch.length+10)); if (strUnametmp != -1) {strUname=strUnametmp;} else {strUname='NOT FOUND!!!';} strUname;")
+'//--------------------------------
+'//Encode and Decode Entered Text in Base64 format
+PROMPT "Please enter Text to Encode in Base64 format:" !VAR1 
+SET txtInput {{!VAR1}}
+SET Encode64 EVAL("Encode64('{{txtInput}}'); function Encode64(input) {var keyStr = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/='; var output = ''; var chr1, chr2, chr3 = ''; var enc1, enc2, enc3, enc4 = ''; var i = 0; do {chr1 = input.charCodeAt(i++); chr2 = input.charCodeAt(i++); chr3 = input.charCodeAt(i++); enc1 = chr1 >> 2; enc2 = ((chr1 & 3) << 4) | (chr2 >> 4); enc3 = ((chr2 & 15) << 2) | (chr3 >> 6); enc4 = chr3 & 63; if (isNaN(chr2)) {enc3 = enc4 = 64;} else if (isNaN(chr3)) {enc4 = 64;} output = output + keyStr.charAt(enc1) + keyStr.charAt(enc2) + keyStr.charAt(enc3) + keyStr.charAt(enc4); chr1 = chr2 = chr3 = ''; enc1 = enc2 = enc3 = enc4 = '';} while (i < input.length); return output; }")
+PROMPT {{Encode64}}
+'//Decode Base64
+PROMPT "Please enter Base64 Text to Decode:" !VAR1 
+SET base64Input {{!VAR1}}
+SET Decode64 EVAL("Decode64('{{base64Input}}'); function Decode64(input) {var keyStr = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/=';  var output = ''; var chr1, chr2, chr3 = ''; var enc1, enc2, enc3, enc4 = ''; var i = 0; do { enc1 = keyStr.indexOf(input.charAt(i++)); enc2 = keyStr.indexOf(input.charAt(i++)); enc3 = keyStr.indexOf(input.charAt(i++)); enc4 = keyStr.indexOf(input.charAt(i++)); chr1 = (enc1 << 2) | (enc2 >> 4); chr2 = ((enc2 & 15) << 4) | (enc3 >> 2); chr3 = ((enc3 & 3) << 6) | enc4; output = output + String.fromCharCode(chr1); if (enc3 != 64) { output = output + String.fromCharCode(chr2);} if (enc4 != 64) { output = output + String.fromCharCode(chr3);} chr1 = chr2 = chr3 = ''; enc1 = enc2 = enc3 = enc4 = '';} while (i < input.length); return output;}")
+PROMPT {{Decode64}}
